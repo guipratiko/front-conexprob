@@ -8,18 +8,13 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     server: {
-      port: parseInt(env.VITE_PORT) || 3150,
-      host: '0.0.0.0', // Important for Docker/Easypanel
+      port: parseInt(env.VITE_PORT) || 3000,
       proxy: {
         '/api': {
-          target: env.VITE_API_URL?.replace('/api', '') || 'http://localhost:4600',
+          target: env.VITE_API_URL?.replace('/api', '') || 'http://localhost:4800',
           changeOrigin: true
         }
       }
-    },
-    preview: {
-      port: parseInt(env.VITE_PORT) || 3150,
-      host: '0.0.0.0' // Important for Docker/Easypanel
     }
   }
 })
