@@ -9,6 +9,7 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     server: {
       port: parseInt(env.VITE_PORT) || 3150,
+      host: true,
       proxy: {
         '/api': {
           target: env.VITE_API_URL?.replace('/api', '') || 'http://localhost:4800',
@@ -18,7 +19,14 @@ export default defineConfig(({ mode }) => {
     },
     preview: {
       port: parseInt(env.VITE_PORT) || 3150,
-      host: true
+      host: '0.0.0.0',
+      strictPort: true
+    },
+    build: {
+      outDir: 'dist',
+      assetsDir: 'assets',
+      emptyOutDir: true,
+      sourcemap: false
     }
   }
 })

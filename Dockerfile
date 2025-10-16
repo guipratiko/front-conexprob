@@ -5,15 +5,18 @@ WORKDIR /app
 # Copiar package.json
 COPY package*.json ./
 
-# Instalar TODAS as dependências (incluindo devDependencies)
+# Instalar todas as dependências
 RUN npm ci
 
 # Copiar código fonte
 COPY . .
 
+# Fazer build
+RUN npm run build
+
 # Expor porta
 EXPOSE 3150
 
-# Usar Vite diretamente (sem build)
+# Usar vite preview para servir build
 CMD ["npm", "run", "serve"]
 
