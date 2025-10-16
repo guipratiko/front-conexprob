@@ -15,22 +15,6 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true
         }
       }
-    },
-    build: {
-      outDir: 'dist',
-      assetsDir: 'assets',
-      sourcemap: false,
-      minify: 'esbuild',
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            vendor: ['react', 'react-dom'],
-            router: ['react-router-dom'],
-            ui: ['framer-motion', 'lucide-react'],
-            utils: ['axios', 'socket.io-client']
-          }
-        }
-      }
     }
   }
 })
