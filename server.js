@@ -2,6 +2,11 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createProxyMiddleware } from 'http-proxy-middleware';
+import dotenv from 'dotenv';
+
+// Carregar variáveis de ambiente
+const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env';
+dotenv.config({ path: envFile });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -9,6 +14,10 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:4800';
+
+console.log('🔧 Ambiente:', process.env.NODE_ENV);
+console.log('🔧 Arquivo .env:', envFile);
+console.log('🔧 BACKEND_URL:', BACKEND_URL);
 
 // Proxy para API do backend
 app.use('/api', createProxyMiddleware({
