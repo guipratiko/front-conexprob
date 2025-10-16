@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || process.env.VITE_PORT || 3150;
+const PORT = process.env.PORT || 3150;
 
 // Middleware para definir MIME types corretos
 app.use((req, res, next) => {

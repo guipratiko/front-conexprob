@@ -4,8 +4,6 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "start": "vite --host --port 3150",
-    "dev": "vite",
     "build": "vite build",
     "serve": "node server.js"
   },
