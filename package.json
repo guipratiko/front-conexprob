@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "build": "echo 'Build skipped - using Vite preview mode'",
     "start": "vite preview --port ${PORT:-3150} --host"
   },
   "dependencies": {
