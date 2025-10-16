@@ -5,7 +5,7 @@ WORKDIR /app
 # Copiar package.json
 COPY package*.json ./
 
-# Instalar dependências
+# Instalar dependências (incluindo serve)
 RUN npm ci
 
 # Copiar código fonte
@@ -17,6 +17,6 @@ RUN npm run build
 # Expor porta
 EXPOSE 3150
 
-# Usar vite preview para servir os arquivos
-CMD ["npm", "run", "preview", "--", "--port", "3150", "--host"]
+# Usar serve para servir os arquivos estáticos (melhor para produção)
+CMD ["npm", "run", "serve"]
 
