@@ -1,6 +1,18 @@
 import { io } from 'socket.io-client';
 
-const SOCKET_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:4800';
+// Construir URL do Socket.io corretamente
+const getSocketURL = () => {
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:4800/api';
+  
+  // Remover /api do final se existir
+  const baseUrl = apiUrl.replace(/\/api\/?$/, '');
+  
+  console.log('🔌 Socket.io URL configurada:', baseUrl);
+  
+  return baseUrl;
+};
+
+const SOCKET_URL = getSocketURL();
 
 class SocketService {
   constructor() {
