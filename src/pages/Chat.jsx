@@ -14,6 +14,10 @@ const Chat = () => {
   const navigate = useNavigate()
   const { user, updateUser } = useAuth()
   const messagesEndRef = useRef(null)
+  
+  // Debug: verificar user
+  console.log('🔍 Chat - User atual:', user)
+  console.log('🔍 Chat - User ID:', user?.id)
 
   const [model, setModel] = useState(null)
   const [messages, setMessages] = useState([])

@@ -27,6 +27,8 @@ export const AuthProvider = ({ children }) => {
         try {
           api.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`
           const response = await api.get('/auth/me')
+          console.log('🔍 AuthContext - Resposta completa:', response.data)
+          console.log('🔍 AuthContext - User encontrado:', response.data.data?.user)
           setUser(response.data.data.user)
           setToken(storedToken)
           
