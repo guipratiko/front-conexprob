@@ -220,7 +220,17 @@ const Chat = () => {
       <div className="flex-1 overflow-y-auto bg-black/30 px-4 py-6">
         <div className="container mx-auto max-w-4xl space-y-4">
           {messages.map((message) => {
-            const isFromUser = message.senderId?.toString() === user.id || message.senderId === user.id
+            // Debug: verificar IDs
+            console.log('🔍 Debug mensagem:', {
+              messageId: message._id,
+              senderId: message.senderId,
+              senderIdString: message.senderId?.toString(),
+              userId: user?.id,
+              userIdString: user?.id?.toString(),
+              isEqual: message.senderId?.toString() === user?.id?.toString()
+            })
+            
+            const isFromUser = message.senderId?.toString() === user?.id?.toString()
             
             return (
               <motion.div
@@ -232,12 +242,12 @@ const Chat = () => {
                 <div
                   className={`max-w-[70%] px-4 py-3 rounded-2xl ${
                     isFromUser
-                      ? 'bg-gradient-to-r from-neonPurple to-accent'
-                      : 'bg-darkGray border border-neonPurple/20'
+                      ? 'bg-gradient-to-r from-neonPurple to-accent text-white'
+                      : 'bg-darkGray border border-neonPurple/20 text-lightText'
                   }`}
                 >
-                  <p className="text-lightText">{message.content}</p>
-                  <p className="text-xs text-lightText/50 mt-1">
+                  <p className={isFromUser ? 'text-white' : 'text-lightText'}>{message.content}</p>
+                  <p className={`text-xs mt-1 ${isFromUser ? 'text-white/70' : 'text-lightText/50'}`}>
                     {new Date(message.createdAt).toLocaleTimeString('pt-BR', {
                       hour: '2-digit',
                       minute: '2-digit'
