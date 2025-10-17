@@ -1,0 +1,32 @@
+:3000 {
+    root * /app/dist
+    encode gzip
+    
+    # Configurar MIME types corretos
+    header {
+        -Server
+    }
+    
+    # Servir arquivos JavaScript com MIME type correto
+    @js {
+        path *.js *.mjs
+    }
+    header @js Content-Type "application/javascript; charset=utf-8"
+    
+    # Servir arquivos CSS com MIME type correto
+    @css {
+        path *.css
+    }
+    header @css Content-Type "text/css; charset=utf-8"
+    
+    # Try files, fallback para index.html (SPA)
+    try_files {path} /index.html
+    
+    file_server
+    
+    log {
+        output stdout
+        format console
+    }
+}
+
