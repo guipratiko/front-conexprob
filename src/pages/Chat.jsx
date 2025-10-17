@@ -17,7 +17,7 @@ const Chat = () => {
   
   // Debug: verificar user
   console.log('🔍 Chat - User atual:', user)
-  console.log('🔍 Chat - User ID:', user?.id)
+  console.log('🔍 Chat - User ID:', user?._id)
 
   const [model, setModel] = useState(null)
   const [messages, setMessages] = useState([])
@@ -229,12 +229,12 @@ const Chat = () => {
               messageId: message._id,
               senderId: message.senderId,
               senderIdString: message.senderId?.toString(),
-              userId: user?.id,
-              userIdString: user?.id?.toString(),
-              isEqual: message.senderId?.toString() === user?.id?.toString()
+              userId: user?._id,
+              userIdString: user?._id?.toString(),
+              isEqual: message.senderId?.toString() === user?._id?.toString()
             })
             
-            const isFromUser = message.senderId?.toString() === user?.id?.toString()
+            const isFromUser = message.senderId?.toString() === user?._id?.toString()
             
             return (
               <motion.div
