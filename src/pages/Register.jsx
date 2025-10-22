@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { User, Mail, Lock, Eye, EyeOff, Phone, Sparkles } from 'lucide-react'
+import { User, Mail, Lock, Eye, EyeOff, Phone, Sparkles, FileText } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 const Register = () => {
@@ -17,6 +17,7 @@ const Register = () => {
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [acceptedTerms, setAcceptedTerms] = useState(false)
   
   const { register } = useAuth()
   const navigate = useNavigate()
@@ -70,6 +71,12 @@ const Register = () => {
     const phoneNumbers = formData.phone.replace(/\D/g, '');
     if (phoneNumbers.length < 10 || phoneNumbers.length > 11) {
       setError('Telefone inválido');
+      return;
+    }
+
+    // Validar aceite dos termos
+    if (!acceptedTerms) {
+      setError('Você deve aceitar os Termos de Uso para continuar');
       return;
     }
 
@@ -240,6 +247,34 @@ const Register = () => {
                   {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
+            </div>
+
+            {/* Termos de Uso */}
+            <div className="flex items-start space-x-3 bg-black/30 border border-neonPurple/20 rounded-lg p-4">
+              <input
+                type="checkbox"
+                id="acceptTerms"
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                className="mt-1 w-4 h-4 text-neonPurple bg-black/50 border-neonPurple/50 rounded focus:ring-neonPurple focus:ring-2 cursor-pointer"
+              />
+              <label htmlFor="acceptTerms" className="text-sm text-lightText/90 cursor-pointer">
+                <div className="flex items-center gap-2">
+                  <FileText size={16} className="text-neonPurple" />
+                  <span>
+                    Li e aceito os{' '}
+                    <a 
+                      href="/termo/Termos_de_Uso_Conexao_Proibida.pdf" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-accent font-semibold hover:underline"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Termos de Uso
+                    </a>
+                  </span>
+                </div>
+              </label>
             </div>
 
             {/* Erro */}
