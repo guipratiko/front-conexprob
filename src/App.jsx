@@ -5,6 +5,7 @@ import { useAuth } from './context/AuthContext'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import CompleteRegistration from './pages/CompleteRegistration'
 import Dashboard from './pages/Dashboard'
 import Models from './pages/Models'
 import Credits from './pages/Credits'
@@ -26,6 +27,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/complete-registration" element={<CompleteRegistration />} />
             
             {/* Rotas protegidas */}
             <Route path="/dashboard" element={

@@ -7,11 +7,32 @@ import toast from 'react-hot-toast'
 import Loading from '../components/Loading'
 
 const Credits = () => {
-  const { user, updateUser } = useAuth()
-  const [packages, setPackages] = useState([])
+  const { user } = useAuth()
   const [transactions, setTransactions] = useState([])
   const [loading, setLoading] = useState(true)
-  const [purchasing, setPurchasing] = useState(false)
+
+  // Pacotes de créditos fixos
+  const packages = [
+    {
+      credits: 100,
+      bonus: 0,
+      price: 27.00,
+      link: 'https://conexaoproibida.carrinho.app/one-checkout/ocmtb/30423331'
+    },
+    {
+      credits: 500,
+      bonus: 0,
+      price: 57.00,
+      link: 'https://conexaoproibida.carrinho.app/one-checkout/ocmtb/30423558',
+      popular: true
+    },
+    {
+      credits: 1000,
+      bonus: 0,
+      price: 97.00,
+      link: 'https://conexaoproibida.carrinho.app/one-checkout/ocmtb/30423612'
+    }
+  ]
 
   useEffect(() => {
     fetchData()
@@ -19,47 +40,19 @@ const Credits = () => {
 
   const fetchData = async () => {
     try {
-      const [packagesRes, transactionsRes] = await Promise.all([
-        api.get('/credits/packages'),
-        api.get('/credits/transactions?limit=10')
-      ])
-
-      setPackages(packagesRes.data.data.packages)
+      const transactionsRes = await api.get('/credits/transactions?limit=10')
       setTransactions(transactionsRes.data.data.transactions)
     } catch (error) {
-      console.error('Erro ao carregar dados:', error)
-      toast.error('Erro ao carregar informações')
+      console.error('Erro ao carregar transações:', error)
+      // Não mostrar erro se não conseguir carregar transações
     } finally {
       setLoading(false)
     }
   }
 
-  const handlePurchase = async (packageIndex) => {
-    setPurchasing(true)
-
-    try {
-      const response = await api.post('/credits/purchase', {
-        packageIndex,
-        paymentMethod: 'pix' // Mock
-      })
-
-      toast.success('Compra realizada com sucesso! Aguardando confirmação...')
-      
-      // Simular atualização de créditos após 2 segundos
-      setTimeout(() => {
-        const pkg = packages[packageIndex]
-        const newCredits = user.credits + pkg.credits + pkg.bonus
-        updateUser({ credits: newCredits })
-        toast.success(`${pkg.credits + pkg.bonus} créditos adicionados!`)
-        fetchData() // Recarregar transações
-      }, 2000)
-
-    } catch (error) {
-      console.error('Erro ao comprar créditos:', error)
-      toast.error('Erro ao processar compra')
-    } finally {
-      setPurchasing(false)
-    }
+  const handlePurchase = (pkg) => {
+    // Redirecionar para o link de checkout
+    window.open(pkg.link, '_blank')
   }
 
   const getStatusColor = (status) => {
@@ -105,7 +98,7 @@ const Credits = () => {
       </motion.div>
 
       {/* Pacotes */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-5xl mx-auto">
         {packages.map((pkg, index) => (
           <motion.div
             key={index}
@@ -113,17 +106,17 @@ const Credits = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             className={`relative bg-darkGray border rounded-2xl p-6 hover:shadow-neon transition-all ${
-              pkg.bonus > 0 
-                ? 'border-accent shadow-neon-pink' 
+              pkg.popular 
+                ? 'border-accent shadow-neon-pink scale-105' 
                 : 'border-neonPurple/30'
             }`}
           >
-            {/* Badge de Bônus */}
-            {pkg.bonus > 0 && (
+            {/* Badge Popular */}
+            {pkg.popular && (
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                 <div className="bg-gradient-to-r from-neonPurple to-accent px-4 py-1 rounded-full flex items-center space-x-1">
                   <Sparkles size={14} />
-                  <span className="text-xs font-bold">+{pkg.bonus} BÔNUS</span>
+                  <span className="text-xs font-bold">MAIS POPULAR</span>
                 </div>
               </div>
             )}
@@ -134,25 +127,22 @@ const Credits = () => {
                 {pkg.credits}
               </div>
               <p className="text-lightText/70">créditos</p>
-              {pkg.bonus > 0 && (
-                <p className="text-accent font-semibold text-sm mt-1">
-                  Total: {pkg.credits + pkg.bonus}
-                </p>
-              )}
             </div>
 
             {/* Preço */}
             <div className="text-center mb-6">
               <span className="text-3xl font-bold">R$ {pkg.price.toFixed(2)}</span>
+              <p className="text-sm text-lightText/60 mt-1">
+                R$ {(pkg.price / pkg.credits).toFixed(2)} por crédito
+              </p>
             </div>
 
             {/* Botão */}
             <button
-              onClick={() => handlePurchase(index)}
-              disabled={purchasing}
-              className="w-full py-3 bg-gradient-to-r from-neonPurple to-accent rounded-lg font-bold hover:shadow-neon transition-all btn-glow disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() => handlePurchase(pkg)}
+              className="w-full py-3 bg-gradient-to-r from-neonPurple to-accent rounded-lg font-bold hover:shadow-neon transition-all btn-glow"
             >
-              {purchasing ? 'Processando...' : 'Comprar'}
+              Comprar Agora
             </button>
 
             {/* Features */}
@@ -165,12 +155,10 @@ const Credits = () => {
                 <Check size={16} className="text-green-400" />
                 <span>Pagamento seguro</span>
               </li>
-              {pkg.bonus > 0 && (
-                <li className="flex items-center space-x-2">
-                  <Sparkles size={16} className="text-accent" />
-                  <span className="text-accent font-semibold">Créditos bônus</span>
-                </li>
-              )}
+              <li className="flex items-center space-x-2">
+                <Check size={16} className="text-green-400" />
+                <span>PIX ou Cartão</span>
+              </li>
             </ul>
           </motion.div>
         ))}
