@@ -25,6 +25,8 @@ const Chat = () => {
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
+  const [showCreditModal, setShowCreditModal] = useState(false)
+  const [creditError, setCreditError] = useState(null)
 
   console.log('🔑 ModelId recebido:', modelId, typeof modelId)
 
@@ -121,7 +123,16 @@ const Chat = () => {
 
   const handleMessageError = (data) => {
     console.error('❌ Erro ao enviar:', data)
-    toast.error(data.message || 'Erro ao enviar mensagem')
+    
+    // Verificar se é erro de créditos insuficientes
+    if (data.insufficientCredits) {
+      // Mostrar modal centralizado
+      setCreditError(data)
+      setShowCreditModal(true)
+    } else {
+      toast.error(data.message || 'Erro ao enviar mensagem')
+    }
+    
     setSending(false)
     setNewMessage('') // Limpar campo mesmo com erro
   }
@@ -323,6 +334,59 @@ const Chat = () => {
           </p>
         </div>
       </div>
+
+      {/* Modal de Créditos Insuficientes */}
+      {showCreditModal && creditError && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 px-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-darkGray border-2 border-accent rounded-2xl p-8 max-w-md w-full text-center shadow-2xl"
+          >
+            {/* Ícone */}
+            <div className="mb-6">
+              <div className="w-20 h-20 mx-auto bg-red-500/20 rounded-full flex items-center justify-center">
+                <CreditCard className="text-red-400" size={40} />
+              </div>
+            </div>
+
+            {/* Título */}
+            <h2 className="text-3xl font-bold mb-4 text-red-400">
+              Créditos Insuficientes!
+            </h2>
+
+            {/* Mensagem */}
+            <div className="space-y-3 mb-8">
+              <p className="text-lightText/90">
+                Você tem <span className="font-bold text-accent">{creditError.currentCredits}</span> créditos
+              </p>
+              <p className="text-lightText/90">
+                Precisa de <span className="font-bold text-accent">{creditError.requiredCredits}</span> créditos para enviar mensagem para{' '}
+                <span className="font-bold text-neonPurple">{creditError.modelName}</span>
+              </p>
+            </div>
+
+            {/* Botões */}
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => {
+                  setShowCreditModal(false)
+                  navigate('/credits')
+                }}
+                className="w-full py-3 bg-gradient-to-r from-neonPurple to-accent rounded-lg font-bold hover:shadow-neon transition-all btn-glow"
+              >
+                Comprar Créditos
+              </button>
+              <button
+                onClick={() => setShowCreditModal(false)}
+                className="w-full py-3 bg-darkGray border border-neonPurple/30 rounded-lg font-semibold hover:border-neonPurple transition-all text-lightText"
+              >
+                Fechar
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   )
 }
